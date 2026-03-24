@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Process Behavior Profiler Dashboard</h1>
+    <p>Live monitoring of CPU, memory, anomalies, and process trends.</p>
+  </header>
+
+  <section class="panel controls">
+    <h2>Run Controls</h2>
+    <div class="grid">
+      <label>Interval (s)<input id="interval" type="number" step="0.1" value="1.0" /></label>
+      <label>Top N<input id="top_n" type="number" step="1" value="10" /></label>
+      <label>Baseline Window<input id="baseline_window" type="number" step="1" value="10" /></label>
+      <label>CPU Z Threshold<input id="cpu_z_threshold" type="number" step="0.1" value="3.0" /></label>
+      <label>Memory Window<input id="memory_window" type="number" step="1" value="6" /></label>
+      <label>Mem Leak Threshold MB<input id="memory_leak_threshold_mb" type="number" step="0.1" value="2.0" /></label>
+      <label>Output CSV<input id="output" type="text" value="process_metrics.csv" /></label>
+      <label class="checkbox"><input id="dry_run" type="checkbox" /> Dry run (no CSV write)</label>
+    </div>
+    <div class="actions">
+      <button id="startBtn">Start</button>
+      <button id="stopBtn">Stop</button>
+      <span id="runState" class="state">Loading...</span>
+    </div>
+  </section>
+
+  <section class="panel summary">
+    <h2>Summary</h2>
+    <div id="summaryCards" class="cards"></div>
+  </section>
+
+  <section class="panel charts">
+    <h2>Live Charts (latest process samples)</h2>
+    <div class="chart-grid">
+      <canvas id="cpuChart"></canvas>
+      <canvas id="memChart"></canvas>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Recent Alerts</h2>
+    <div class="table-wrap">
+      <table id="alertsTable">
+        <thead><tr><th>Time</th><th>Type</th><th>PID</th><th>Name</th><th>CPU%</th><th>Memory MB</th><th>Message</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Latest Samples</h2>
+    <div class="table-wrap">
+      <table id="samplesTable">
+        <thead><tr><th>Time</th><th>PID</th><th>Name</th><th>CPU%</th><th>Memory MB</th><th>CPU Anomaly</th><th>Mem Leak</th><th>Notes</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
