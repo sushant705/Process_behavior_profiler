@@ -12,69 +12,61 @@ A Python-based system profiling tool that monitors process-level CPU and memory 
 - Top-N process tracking by CPU usage
 - Summary report generation
 - Works on Windows, Linux, and macOS (via `psutil`)
-- Optional web dashboard for live monitoring and controls
+
+## Architecture
+
+The profiler is built from three core components:
+
+1. **ProcessSampler**: Collects per-process CPU and RSS memory metrics.
+2. **BehaviorAnalyzer**: Maintains rolling history and flags anomalies.
+3. **ProfilerRunner**: Coordinates sampling, persistence, and reporting.
 
 ## Requirements
 
 - Python 3.10+
-- Dependencies in `requirements.txt`
+- `psutil>=5.9`
 
-Install dependencies:
+Install dependency:
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
+## Usage
 
-## Option A: Run CLI profiler (quick start)
+Run for 60 seconds, sampling every second, and monitor top 10 processes:
 
 ```bash
 python profiler.py --duration 60 --interval 1 --top-n 10 --output process_metrics.csv
 ```
 
-Dry run (no CSV write):
+Generate a dry run (collects and analyzes but does not write CSV):
 
 ```bash
 python profiler.py --duration 20 --dry-run
 ```
 
----
-
-## Option B: Run Web Dashboard (recommended)
-
-Start web app:
+Tune detection behavior:
 
 ```bash
-uvicorn app:app --reload
+python profiler.py \
+  --cpu-z-threshold 2.5 \
+  --memory-window 8 \
+  --memory-leak-threshold-mb 3
 ```
 
-Open in browser:
-
-- `http://127.0.0.1:8000`
-
-### Web workflow
-
-1. Fill run parameters (interval, top-n, thresholds).
-2. Click **Start**.
-3. Watch live charts, latest samples, and alerts.
-4. Click **Stop** when done.
-5. If not in dry-run mode, check generated CSV file (default: `process_metrics.csv`).
-
----
-
-## Windows setup (PowerShell)
+## Windows Quick Start
 
 ```powershell
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn app:app --reload
+python profiler.py --duration 60 --interval 1 --top-n 10 --output process_metrics.csv
 ```
 
----
+## Output
 
-## CSV Output Columns
+### CSV columns
 
 - `timestamp`
 - `pid`
@@ -84,6 +76,16 @@ uvicorn app:app --reload
 - `cpu_anomaly`
 - `memory_leak_suspected`
 - `notes`
+
+### Console summary
+
+After completion, the tool prints:
+
+- Total samples collected
+- Number of unique processes observed
+- CPU anomaly counts
+- Memory leak suspicion counts
+- Top flagged processes
 
 ## Notes
 
